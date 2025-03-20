@@ -26,6 +26,7 @@ export const App = () => {
   }, []);
 
   const submit = () => {
+    console.debug('submit');
     setLoading(true);
 
     sendDataToGA({
@@ -39,7 +40,7 @@ export const App = () => {
     });
   };
   const goNext = () => {
-    window.gtag('event', 'next_4668_var2');
+    window.gtag('event', 'next_4668_var1');
     if (flowCompleted) {
       window.location.replace(REDIRECT_LINK);
     } else {
@@ -52,7 +53,7 @@ export const App = () => {
   }
 
   if (showBuyScreen) {
-    return <BuyScreen setLots={setLots} lots={lots} loading={!loading} submit={submit} />;
+    return <BuyScreen setLots={setLots} lots={lots} loading={loading} submit={submit} />;
   }
 
   return (

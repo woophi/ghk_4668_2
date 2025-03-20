@@ -5,11 +5,12 @@ import { SuperEllipse } from '@alfalab/core-components/icon-view/super-ellipse';
 import { NumberInput } from '@alfalab/core-components/number-input';
 import { Typography } from '@alfalab/core-components/typography';
 import { ArrowRightMIcon } from '@alfalab/icons-glyph/ArrowRightMIcon';
+import { ChevronRightMIcon } from '@alfalab/icons-glyph/ChevronRightMIcon';
 import { InformationCircleLineSIcon } from '@alfalab/icons-glyph/InformationCircleLineSIcon';
 import { useState } from 'react';
 import novatekLogo from '../assets/novatek.png';
 import rubIcon from '../assets/rub.png';
-import { PRICES } from '../data';
+import { ACTION_SUM, PRICES } from '../data';
 import { bsSt } from './style.css';
 
 type Props = {
@@ -21,6 +22,13 @@ type Props = {
 
 export const BuyScreen = ({ lots, setLots, loading, submit }: Props) => {
   const [showBs, setShowBs] = useState(false);
+
+  const goToLongread = () => {
+    window.gtag('event', 'inf_4668_var1');
+    window.location.replace('alfabank://longread?endpoint=v1/adviser/longreads/45104');
+  };
+
+  const sum = lots * PRICES.ticker * (1 + PRICES.comission);
 
   return (
     <>
@@ -80,6 +88,26 @@ export const BuyScreen = ({ lots, setLots, loading, submit }: Props) => {
             pattern="[0-9]*"
           />
         </div>
+
+        <div className={bsSt.boxGreen} onClick={goToLongread}>
+          <Typography.Text view="secondary-medium">
+            {sum >= ACTION_SUM ? (
+              'Условия выполнены. После покупки вам начислят акцию НЛМК'
+            ) : sum ? (
+              <>
+                Купите еще на <span style={{ fontWeight: 700 }}>{(ACTION_SUM - sum).toLocaleString('ru')} ₽</span> – акцию
+                НЛМК. Действует до 31.03
+              </>
+            ) : (
+              <>
+                Купите на <span style={{ fontWeight: 700 }}>{ACTION_SUM.toLocaleString('ru')} ₽</span> – получите акцию НЛМК.
+                Действует до 31.03
+              </>
+            )}
+          </Typography.Text>
+
+          <ChevronRightMIcon />
+        </div>
       </div>
       <div className={bsSt.bottomBtn}>
         <Typography.Text view="primary-small" color="secondary">
@@ -89,12 +117,7 @@ export const BuyScreen = ({ lots, setLots, loading, submit }: Props) => {
         <div className={bsSt.bottomItems}>
           <div>
             <Typography.Title tag="h2" view="medium" font="system" weight="medium">
-              <Amount
-                minority={1}
-                value={lots * PRICES.ticker * (1 + PRICES.comission)}
-                bold="major"
-                rightAddons="&nbsp;₽"
-              />
+              <Amount minority={1} value={sum} bold="major" rightAddons="&nbsp;₽" />
             </Typography.Title>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <Typography.Text view="primary-small" color="secondary">
@@ -108,9 +131,15 @@ export const BuyScreen = ({ lots, setLots, loading, submit }: Props) => {
               />
             </div>
           </div>
-          <div onClick={loading ? undefined : submit}>
+          <div
+            onClick={() => {
+              if (!loading) {
+                submit();
+              }
+            }}
+          >
             <SuperEllipse backgroundColor="#0F0F0F" size={48}>
-              <ArrowRightMIcon color="#FFFFFF" />
+              {loading ? <div className={bsSt.loader} /> : <ArrowRightMIcon color="#FFFFFF" />}
             </SuperEllipse>
           </div>
         </div>
