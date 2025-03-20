@@ -26,7 +26,6 @@ export const App = () => {
   }, []);
 
   const submit = () => {
-    console.debug('submit');
     setLoading(true);
 
     sendDataToGA({
