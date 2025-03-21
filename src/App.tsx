@@ -33,7 +33,7 @@ export const App = () => {
       lot: lots,
       sum: lots * PRICES.ticker * (1 + PRICES.comission),
     }).then(() => {
-      // LS.setItem(LSKeys.ShowThx, true);
+      LS.setItem(LSKeys.ShowThx, true);
       setThx(true);
       setLoading(false);
     });
